@@ -1,6 +1,6 @@
 ### About
 
-Script for parcing your dialogs in social network VK
+Script for parsing your dialogs in social network VK
 on python
 
 ### How to setup project

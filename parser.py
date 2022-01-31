@@ -28,10 +28,10 @@ def get_messages(link):
     soup = BeautifulSoup(html, 'lxml')
     items = soup.find_all('div', class_='item')
 
-    parce_html_items(items)
+    parse_html_items(items)
 
 
-def parce_html_items(items):
+def parse_html_items(items):
     # open output file
     output = open('dialogs.txt', 'a')
 
@@ -50,7 +50,7 @@ def parce_html_items(items):
             pass
 
         if message is not None:
-            # if message is text start parcing
+            # if message is text start parsing
             message.div.decompose()
             message = message.get_text().strip()
 
