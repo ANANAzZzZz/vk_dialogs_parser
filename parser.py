@@ -71,5 +71,5 @@ def parse_html_items(items):
 get_text_dialogs()
 
 print()
-print('Data parced succesfuly \n'
+print('Data parsed succesfuly \n'
       'check it out inside project directory')
