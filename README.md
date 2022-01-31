@@ -15,4 +15,4 @@ on python
 1. Download html data with vk dialogs
 2. Paste html data inside project
 3. Copy adress on html data from explorer and paste in console
-after starting script          ( example: vk_dialogues/messages/111111111 )
+after starting script          ( example: vk_dialogues/messages/111111111/ )

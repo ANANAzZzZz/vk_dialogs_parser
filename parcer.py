@@ -69,5 +69,7 @@ def parce_html_items(items):
                 pass
 
 get_text_dialogs()
+
+print()
 print('Data parced succesfuly \n'
       'check it out inside project directory')
