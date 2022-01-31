@@ -1,6 +1,8 @@
 from bs4 import BeautifulSoup
 import emoji
 import os
+import traceback
+import sys
 
 
 def get_text_dialogs():
@@ -10,16 +12,30 @@ def get_text_dialogs():
     eternal_link = input()
 
     # get names of all html documents from directory
-    all_data = os.listdir(eternal_link)
+    try:
+        all_data = os.listdir(eternal_link)
 
-    number_of_html = 0
-    for element in all_data:
-        link = eternal_link + element
-        get_messages(link)
+        number_of_html_counter = 0
 
-        print('parsing html № ', number_of_html)
-        number_of_html += 1
+        for element in all_data:
+            # generating link to the element
+            link = eternal_link + element
 
+            get_messages(link)
+
+            print('parsing html № ', number_of_html_counter)
+            number_of_html_counter += 1
+
+
+    except FileNotFoundError:
+        print('Enter correct adress')
+
+        sys.exit()
+
+    except KeyboardInterrupt:
+        print('Scipt has been interrupted')
+
+        sys.exit()
 
 def get_messages(link):
     data = open(link, "r")
@@ -32,11 +48,13 @@ def get_messages(link):
 
 
 def parse_html_items(items):
+
+
     # open output file
     output = open('dialogs.txt', 'a')
 
     # counter for spliting dialogs on logic blocks
-    counter = 0
+    split_counter = 0
 
     for item in reversed(items):
         # searching tag message inside tag item
@@ -46,6 +64,8 @@ def parse_html_items(items):
             # if message is attachment decompose it
             item = item.find('div', class_='attachment').decompose()
             message = None
+
+
         except:
             pass
 
@@ -61,15 +81,17 @@ def parse_html_items(items):
                     output.write(chr(10))
                     output.write('- ' + message)
 
+                    message_counter += 1
+
                     # add logical indents
-                    if counter % 2 == 0:
+                    if split_counter % 2 == 0:
                         output.write(chr(10))
-                    counter += 1
+                    split_counter += 1
+
             except:
                 pass
 
 get_text_dialogs()
 
-print()
-print('Data parsed succesfuly \n'
-      'check it out inside project directory')
+print('\nData parsed succesfuly \n'
+      'Check it out inside project directory \n')
