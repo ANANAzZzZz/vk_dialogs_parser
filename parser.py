@@ -1,21 +1,35 @@
 from bs4 import BeautifulSoup
 import emoji
 import os
-import traceback
 import sys
 
 
-def get_text_dialogs():
+class Counter:
 
+    def __init__(self):
+        self._value = 0
+
+
+    def new_value(self):
+        self._value += 1
+        return self._value
+
+
+    def print_value(self):
+        return self._value
+
+
+def get_text_dialogs():
     print('Input link on directory with html data from vk dialogs: ')
     print('(Directory should be inside project)')
     eternal_link = input()
 
-    # get names of all html documents from directory
     try:
+        # get names of all html documents from directory
         all_data = os.listdir(eternal_link)
 
-        number_of_html_counter = 0
+        # counters
+        number_of_html = Counter()
 
         for element in all_data:
             # generating link to the element
@@ -23,9 +37,10 @@ def get_text_dialogs():
 
             get_messages(link)
 
-            print('parsing html № ', number_of_html_counter)
-            number_of_html_counter += 1
+            print('parsing html № ', number_of_html.print_value())
+            number_of_html.new_value()
 
+        output_info()
 
     except FileNotFoundError:
         print('Enter correct adress')
@@ -36,6 +51,7 @@ def get_text_dialogs():
         print('Scipt has been interrupted')
 
         sys.exit()
+
 
 def get_messages(link):
     data = open(link, "r")
@@ -48,13 +64,11 @@ def get_messages(link):
 
 
 def parse_html_items(items):
-
-
     # open output file
     output = open('dialogs.txt', 'a')
 
     # counter for spliting dialogs on logic blocks
-    split_counter = 0
+    split = Counter()
 
     for item in reversed(items):
         # searching tag message inside tag item
@@ -81,17 +95,18 @@ def parse_html_items(items):
                     output.write(chr(10))
                     output.write('- ' + message)
 
-                    message_counter += 1
-
                     # add logical indents
-                    if split_counter % 2 == 0:
+                    if split.print_value() % 2 == 0:
                         output.write(chr(10))
-                    split_counter += 1
+                    split.new_value()
 
             except:
                 pass
 
-get_text_dialogs()
 
-print('\nData parsed succesfuly \n'
-      'Check it out inside project directory \n')
+def output_info():
+    print('\nData parsed succesfuly \n'
+        'Check it out inside project directory \n')
+
+
+get_text_dialogs()
