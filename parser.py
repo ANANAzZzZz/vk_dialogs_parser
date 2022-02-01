@@ -15,7 +15,7 @@ class Counter:
         return self._value
 
 
-    def print_value(self):
+    def get_value(self):
         return self._value
 
 
@@ -37,7 +37,7 @@ def get_text_dialogs():
 
             get_messages(link)
 
-            print('parsing html № ', number_of_html.print_value())
+            print('parsing html № ', number_of_html.get_value() + 1)
             number_of_html.new_value()
 
         output_info()
@@ -96,9 +96,9 @@ def parse_html_items(items):
                     output.write('- ' + message)
 
                     # add logical indents
-                    if split.print_value() % 2 == 0:
+                    if split.get_value() % 2 == 0:
                         output.write(chr(10))
-                    split.new_value()
+                    print(split.new_value())
 
             except:
                 pass
