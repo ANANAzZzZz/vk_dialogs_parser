@@ -1,12 +1,12 @@
-from bs4 import BeautifulSoup
 import emoji
 import os
 import sys
 
-
+from bs4 import BeautifulSoup
 from classes.Counter import Counter
 
-def get_text_dialogs(messages_counter, attachment_counter):
+
+def get_text_dialogs():
     print('Input link on directory with html data from vk dialogs: ')
     print('(Directory should be inside project)')
     eternal_link = input()
@@ -16,6 +16,8 @@ def get_text_dialogs(messages_counter, attachment_counter):
         all_data = os.listdir(eternal_link)
 
         # counters
+        messages_counter = Counter()
+        attachment_counter = Counter()
         number_of_html = Counter()
 
         for element in all_data:
@@ -106,7 +108,5 @@ def output_info(message_counter, attachment_counter):
         f'\nParsed {message_counter.get_value()} messages'
         f'\nRemoved {attachment_counter.get_value()} attachments')
 
-messages_counter = Counter()
-attachment_counter = Counter()
 
-get_text_dialogs(messages_counter, attachment_counter)
+get_text_dialogs()
