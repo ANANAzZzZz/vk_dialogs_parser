@@ -1,7 +1,7 @@
 ### About
 
 Script for parsing your dialogs in social network VK
-on python
+on python. Could be used for creating datasets.
 
 ### How to setup project
 
