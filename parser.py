@@ -4,22 +4,9 @@ import os
 import sys
 
 
-class Counter:
+from classes.Counter import Counter
 
-    def __init__(self):
-        self._value = 0
-
-
-    def new_value(self):
-        self._value += 1
-        return self._value
-
-
-    def get_value(self):
-        return self._value
-
-
-def get_text_dialogs():
+def get_text_dialogs(messages_counter, attachment_counter):
     print('Input link on directory with html data from vk dialogs: ')
     print('(Directory should be inside project)')
     eternal_link = input()
@@ -35,12 +22,12 @@ def get_text_dialogs():
             # generating link to the element
             link = eternal_link + element
 
-            get_messages(link)
+            get_messages(link, messages_counter, attachment_counter)
 
             print('parsing html № ', number_of_html.get_value() + 1)
             number_of_html.new_value()
 
-        output_info()
+        output_info(messages_counter, attachment_counter)
 
     except FileNotFoundError:
         print('Enter correct adress')
@@ -53,22 +40,25 @@ def get_text_dialogs():
         sys.exit()
 
 
-def get_messages(link):
+def get_messages(link, messages_counter, attachment_counter):
+    # open html file using link
     data = open(link, "r")
     html = data.read()
 
     soup = BeautifulSoup(html, 'lxml')
     items = soup.find_all('div', class_='item')
 
-    parse_html_items(items)
+    messages_counter = parse_html_items(items, messages_counter, attachment_counter)
+
+    return messages_counter, attachment_counter
 
 
-def parse_html_items(items):
+def parse_html_items(items, messages_counter, attachment_counter):
     # open output file
     output = open('dialogs.txt', 'a')
 
     # counter for spliting dialogs on logic blocks
-    split = Counter()
+    split_counter = Counter()
 
     for item in reversed(items):
         # searching tag message inside tag item
@@ -79,6 +69,7 @@ def parse_html_items(items):
             item = item.find('div', class_='attachment').decompose()
             message = None
 
+            attachment_counter.new_value()
 
         except:
             pass
@@ -95,18 +86,27 @@ def parse_html_items(items):
                     output.write(chr(10))
                     output.write('- ' + message)
 
+                    # increase message counter
+                    messages_counter.new_value()
+
                     # add logical indents
-                    if split.get_value() % 2 == 0:
+                    if split_counter.get_value() % 2 == 0:
                         output.write(chr(10))
-                    print(split.new_value())
+                    split_counter.new_value()
 
             except:
                 pass
 
+    return messages_counter, attachment_counter
 
-def output_info():
+
+def output_info(message_counter, attachment_counter):
     print('\nData parsed succesfuly \n'
-        'Check it out inside project directory \n')
+        'Check it out inside project directory \n'
+        f'\nParsed {message_counter.get_value()} messages'
+        f'\nRemoved {attachment_counter.get_value()} attachments')
 
+messages_counter = Counter()
+attachment_counter = Counter()
 
-get_text_dialogs()
+get_text_dialogs(messages_counter, attachment_counter)
