@@ -19,22 +19,25 @@ def get_text_dialogs():
         messages_counter = Counter()
         attachment_counter = Counter()
         number_of_html = Counter()
+        demojize_failed = Counter()
 
         for element in all_data:
             # generating link to the element
             link = eternal_link + element
 
-            get_messages(link, messages_counter, attachment_counter)
+            get_messages(link, messages_counter, attachment_counter, demojize_failed)
 
             print('parsing html № ', number_of_html.get_value() + 1)
             number_of_html.new_value()
 
-        output_info(messages_counter, attachment_counter)
+        output_info(messages_counter, attachment_counter, demojize_failed)
+
 
     except FileNotFoundError:
         print('Enter correct adress')
 
         sys.exit()
+
 
     except KeyboardInterrupt:
         print('Scipt has been interrupted')
@@ -42,7 +45,7 @@ def get_text_dialogs():
         sys.exit()
 
 
-def get_messages(link, messages_counter, attachment_counter):
+def get_messages(link, messages_counter, attachment_counter, demojize_failed):
     # open html file using link
     data = open(link, "r")
     html = data.read()
@@ -50,12 +53,12 @@ def get_messages(link, messages_counter, attachment_counter):
     soup = BeautifulSoup(html, 'lxml')
     items = soup.find_all('div', class_='item')
 
-    messages_counter = parse_html_items(items, messages_counter, attachment_counter)
+    messages_counter = parse_html_items(items, messages_counter, attachment_counter, demojize_failed)
 
-    return messages_counter, attachment_counter
+    return messages_counter, attachment_counter, demojize_failed
 
 
-def parse_html_items(items, messages_counter, attachment_counter):
+def parse_html_items(items, messages_counter, attachment_counter, demojize_failed):
     # open output file
     output = open('dialogs.txt', 'a')
 
@@ -97,16 +100,18 @@ def parse_html_items(items, messages_counter, attachment_counter):
                     split_counter.new_value()
 
             except:
-                pass
+                demojize_failed.new_value()
 
-    return messages_counter, attachment_counter
+    return messages_counter, attachment_counter, demojize_failed
 
 
-def output_info(message_counter, attachment_counter):
+def output_info(message_counter, attachment_counter, demojize_failed):
     print('\nData parsed succesfuly \n'
         'Check it out inside project directory \n'
         f'\nParsed {message_counter.get_value()} messages'
-        f'\nRemoved {attachment_counter.get_value()} attachments')
+        f'\nRemoved {attachment_counter.get_value()} attachments \n'
+        '\nErrors:'
+        f'\nDemojize_failed: {demojize_failed.get_value()}')
 
 
 get_text_dialogs()
